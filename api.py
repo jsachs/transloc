@@ -33,7 +33,12 @@ def get_routes():
     routes_url += 'agencies=' + agency_id
     routes_response = urlopen(routes_url)
     json_routes = load(routes_response)
-    return json_routes['data'][agency_id]
+
+    if agency_id in json_routes['data']:
+        return json_routes['data'][agency_id]
+    else:
+        print "No active routes at this time."
+        return None
 
 """
 get_stops()

@@ -25,7 +25,7 @@ def lat_lng_dist((a1,a2), (b1,b2)):
 """
 get_nearest_stop(location)
 Gets the stop that is nearest to a given location,
-with no constraints.
+constrained by the list of active routes.
 
 Parameters:
     - location: a (lat,lng) tuple
@@ -34,16 +34,22 @@ Returns:
     - a stop dictionary
 """
 def get_nearest_stop(location):
+    routes = get_routes()
     stops = get_stops()
     min_dist = -1
     min_stop = {}
 
+    if not routes:
+        return None
+
+    print list(routes[n]['route_id'] for n in range(len(routes)))
     for stop in stops:
-        stop_loc = (stop['location']['lat'], stop['location']['lng'])
-        dist = lat_lng_dist(location, stop_loc)
-        if min_dist < 0 or dist < min_dist:
-            min_dist = dist
-            min_stop = stop
+        if list(set(stop['routes']) & set(list(routes[n]['route_id'] for n in range(len(routes))))):
+            stop_loc = (stop['location']['lat'], stop['location']['lng'])
+            dist = lat_lng_dist(location, stop_loc)
+            if min_dist < 0 or dist < min_dist:
+                min_dist = dist
+                min_stop = stop
 
     return min_stop
 
@@ -87,8 +93,8 @@ Returns:
     - a (stop, route, stop) tuple
 """
 def get_directions(start, finish):
-    stops = get_stops()
     routes = get_routes()
+    stops = get_stops()
 
     # First, get the closest destination stop
     f_stop = get_nearest_stop(finish)
@@ -100,10 +106,12 @@ def get_directions(start, finish):
             if temp_route['route_id'] == route:
                 f_routes.append(temp_route)
 
-    # Figure out which potential i_stop is closest to start
+    # Get a list of potential i_stops
     i_stops = []
     for route in f_routes:
         i_stops.append(nearest_stop_on_route(route, start))
+    
+    # Figure out which potential i_stop is closest to start
     min_dist = -1
     i_stop = []
     for stop in i_stops:
@@ -112,6 +120,8 @@ def get_directions(start, finish):
         if min_dist < 0 or dist < min_dist:
             min_dist = dist
             i_stop = stop
+    
+    # Determine the route that connects these two stops
     route = {}
     for temp_route in routes:
         if temp_route['route_id'] in i_stop['routes'] and temp_route['route_id'] in f_stop['routes']:
