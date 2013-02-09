@@ -1,0 +1,124 @@
+#================================================================================
+#
+# Module for determining the appropriate route and stops given a destination
+#
+#================================================================================
+
+from api  import get_routes, get_stops
+from math import sqrt
+
+"""
+lat_lng_dist(a, b)
+Calculates the Euclidean distance between two lat/long points.
+
+Parameters:
+    - a: a (lat,lng) tuple
+    - b: a (lat,lng) tuple
+
+Returns:
+    - the Euclidean distance between points
+"""
+def lat_lng_dist((a1,a2), (b1,b2)):
+    dist = sqrt((a1-b1)**2 + (a2-b2)**2)
+    return dist
+
+"""
+get_nearest_stop(location)
+Gets the stop that is nearest to a given location,
+with no constraints.
+
+Parameters:
+    - location: a (lat,lng) tuple
+
+Returns:
+    - a stop dictionary
+"""
+def get_nearest_stop(location):
+    stops = get_stops()
+    min_dist = -1
+    min_stop = {}
+
+    for stop in stops:
+        stop_loc = (stop['location']['lat'], stop['location']['lng'])
+        dist = lat_lng_dist(location, stop_loc)
+        if min_dist < 0 or dist < min_dist:
+            min_dist = dist
+            min_stop = stop
+
+    return min_stop
+
+"""
+nearest_stop_on_route(route, location)
+Gets the stop that is nearest to a given location,
+constrained by a specific route.
+
+Parameters:
+    - route: a route dictionary
+    - location: a (lat,lng) tuple
+
+Returns:
+    - a stop dictionary
+"""
+def nearest_stop_on_route(route, location):
+    stops = get_stops()
+    min_dist = -1
+    min_stop = {}
+
+    for stop in stops:
+        if route['route_id'] in stop['routes']:
+            stop_loc = (stop['location']['lat'], stop['location']['lng'])
+            dist = lat_lng_dist(location, stop_loc)
+            if min_dist < 0 or dist < min_dist:
+                min_dist = dist
+                min_stop = stop
+
+    return min_stop
+
+"""
+get_directions(start, finish)
+Determines the endpoint stops, as well as the route to take,
+to get a traveller from start to finish.
+
+Parameters:
+    - start: a (lat,lng) tuple
+    - finish: a (lat,lng)
+
+Returns:
+    - a (stop, route, stop) tuple
+"""
+def get_directions(start, finish):
+    stops = get_stops()
+    routes = get_routes()
+
+    # First, get the closest destination stop
+    f_stop = get_nearest_stop(finish)
+
+    # Get the routes through f_stop
+    f_routes = []
+    for route in f_stop['routes']:
+        for temp_route in routes:
+            if temp_route['route_id'] == route:
+                f_routes.append(temp_route)
+
+    # Figure out which potential i_stop is closest to start
+    i_stops = []
+    for route in f_routes:
+        i_stops.append(nearest_stop_on_route(route, start))
+    min_dist = -1
+    i_stop = []
+    for stop in i_stops:
+        stop_loc = (stop['location']['lat'], stop['location']['lng'])
+        dist = lat_lng_dist(start, stop_loc)
+        if min_dist < 0 or dist < min_dist:
+            min_dist = dist
+            i_stop = stop
+    route = {}
+    for temp_route in routes:
+        if temp_route['route_id'] in i_stop['routes'] and temp_route['route_id'] in f_stop['routes']:
+            route = temp_route
+            break
+
+    return (i_stop, route, f_stop)
+
+
+
