@@ -96,6 +96,9 @@ def get_directions(start, finish):
     routes = get_routes()
     stops = get_stops()
 
+    if not routes:
+        return None
+
     # First, get the closest destination stop
     f_stop = get_nearest_stop(finish)
 
