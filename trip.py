@@ -20,7 +20,14 @@ class Trip:
         self.f_stop = trip[2]
 
         # Get time estimates
-        
+        i_est = get_estimate(self.route['route_id'], self.i_stop['stop_id'])
+        self.i_stop_est = i_est[0]['arrival_at']
+
+        f_est = get_estimate(self.route['route_id'], self.f_stop['stop_id'])
+        for est in f_est:
+            if est['vehicle_id'] == i_est[0]['vehicle_id']:
+                self.f_stop_est = est['arrival_at']
+                break
 
     """
     String
@@ -29,9 +36,11 @@ class Trip:
     nicely formatted string.
     """
     def __str__(self):
-        return "Start: " + self.i_stop['name'] + '\n' + \
-        "Route: " + self.route['long_name'] + '\n' + \
-        "Destination: " + self.f_stop['name']
+        return "Start: " + self.i_stop['name'] + \
+        " | Departure: " + self.i_stop_est[11:16] + '\n' + \
+        "Route: "        + self.route['long_name'] + '\n' + \
+        "Destination: "  + self.f_stop['name'] + \
+        " | Arrival: "   + self.f_stop_est[11:16]
 
     """
     Update trip time.
