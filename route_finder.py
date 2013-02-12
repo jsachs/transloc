@@ -42,7 +42,6 @@ def get_nearest_stop(location):
     if not routes:
         return None
 
-    print list(routes[n]['route_id'] for n in range(len(routes)))
     for stop in stops:
         if list(set(stop['routes']) & set(list(routes[n]['route_id'] for n in range(len(routes))))):
             stop_loc = (stop['location']['lat'], stop['location']['lng'])

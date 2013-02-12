@@ -7,6 +7,7 @@
 from urllib2      import urlopen
 from json         import load
 from route_finder import get_directions
+from trip         import *
 
 
 if __name__ == '__main__':
@@ -31,5 +32,5 @@ if __name__ == '__main__':
         point.append(lat)
         point.append(lng)
 
-
-    print get_directions((start[0],start[1]), (dest[0],dest[1]))
+    trip = Trip(get_directions(start, dest))
+    print trip

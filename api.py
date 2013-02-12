@@ -55,12 +55,15 @@ def get_stops():
     return json_stops['data']
 
 """
-get_estimates()
+get_estimate(route, stop)
+
+Parameters:
+    - 
 
 Returns:
     - a list of arrival dictionaries
 """
-def get_estimates():
+def get_estimate(route, stop):
     agency_id = get_agency('uchicago')
     estimates_url = url + 'arrival-estimates.json?'
     estimates_url += 'agencies=' + agency_id
