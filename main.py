@@ -7,7 +7,8 @@
 from urllib2      import urlopen
 from json         import load
 from route_finder import get_directions
-from trip         import *
+from trip         import Trip
+from walking      import walk_to, walk_from
 
 
 if __name__ == '__main__':
@@ -22,7 +23,7 @@ if __name__ == '__main__':
         loc = loc.replace(" ","+")
         address = 'address=' + loc
     
-        address_url = url + address + "&sensor=false"
+        address_url = url + address + "&sensor=true"
         print address_url
         address_response = urlopen(address_url)
         json_address = load(address_response)
@@ -33,4 +34,7 @@ if __name__ == '__main__':
         point.append(lng)
 
     trip = Trip(get_directions(start, dest))
+    
+    walk_to(start, trip.i_stop)
     print trip
+    walk_from(trip.f_stop, dest)

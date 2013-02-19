@@ -19,15 +19,7 @@ class Trip:
         self.route  = trip[1]
         self.f_stop = trip[2]
 
-        # Get time estimates
-        i_est = get_estimate(self.route['route_id'], self.i_stop['stop_id'])
-        self.i_stop_est = i_est[0]['arrival_at']
-
-        f_est = get_estimate(self.route['route_id'], self.f_stop['stop_id'])
-        for est in f_est:
-            if est['vehicle_id'] == i_est[0]['vehicle_id']:
-                self.f_stop_est = est['arrival_at']
-                break
+        self.update_estimates()
 
     """
     String
@@ -44,11 +36,17 @@ class Trip:
 
     """
     Update trip time.
-
-
     """
     def update_estimates(self):
-        return
+        i_est = get_estimate(self.route['route_id'], self.i_stop['stop_id'])
+        self.i_stop_est = i_est[0]['arrival_at']
+
+        f_est = get_estimate(self.route['route_id'], self.f_stop['stop_id'])
+        for est in f_est:
+            if est['vehicle_id'] == i_est[0]['vehicle_id']:
+                if est['arrival_at'] > i_est[0]['arrival_at']:
+                    self.f_stop_est = est['arrival_at']
+                    break
 
     """
     Set notifications.

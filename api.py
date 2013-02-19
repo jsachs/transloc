@@ -72,7 +72,7 @@ def get_estimate(route, stop):
     estimates_url += '&stops='    + stop
     estimates_response = urlopen(estimates_url)
     json_estimates = load(estimates_response)
-    return json_estimates['data'][0]['arrivals']
+    return json_estimates['data'][0]['arrivals'] if not json_estimates['data'] else None
 
 
 
