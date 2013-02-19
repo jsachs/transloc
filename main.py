@@ -8,23 +8,21 @@ from urllib2      import urlopen
 from json         import load
 from route_finder import get_directions
 from trip         import Trip
-from walking      import walk_to, walk_from
 
 
 if __name__ == '__main__':
     d  = raw_input("Please enter destination address:")
-    s = raw_input("Please enter start address:")
-    dest = []
+    s  = raw_input("Please enter start address:")
+    dest  = []
     start = []
 
     url = 'http://maps.googleapis.com/maps/api/geocode/json?'
     
-    for loc, point in zip([s, d],[start, dest]):
-        loc = loc.replace(" ","+")
-        address = 'address=' + loc
+    for location, point in zip([s, d],[start, dest]):
+        location = location.replace(' ', '+')
+        address = 'address=' + location
     
         address_url = url + address + "&sensor=true"
-        print address_url
         address_response = urlopen(address_url)
         json_address = load(address_response)
 
@@ -34,7 +32,5 @@ if __name__ == '__main__':
         point.append(lng)
 
     trip = Trip(get_directions(start, dest))
-    
-    walk_to(start, trip.i_stop)
+    trip.walking_directions(start, dest)
     print trip
-    walk_from(trip.f_stop, dest)

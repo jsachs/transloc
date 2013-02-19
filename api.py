@@ -72,7 +72,10 @@ def get_estimate(route, stop):
     estimates_url += '&stops='    + stop
     estimates_response = urlopen(estimates_url)
     json_estimates = load(estimates_response)
-    return json_estimates['data'][0]['arrivals'] if not json_estimates['data'] else None
+    return json_estimates['data'][0]['arrivals']
+    # TODO add error message if there are no arrivals
+
+# TODO add segment support for notifications
 
 
 

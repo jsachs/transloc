@@ -39,6 +39,8 @@ def get_nearest_stop(location):
     min_dist = -1
     min_stop = {}
 
+    # Intersect with North, South, East, Central
+
     if not routes:
         return None
 

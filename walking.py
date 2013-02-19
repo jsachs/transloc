@@ -12,7 +12,10 @@ walk_to(start, stop)
 
 Parameters:
     - start: a (lat,lng) tuple
-    - stop:  a TransLoc shuttle stop
+    - stop:  a TransLoc shuttle stop JSON data item
+
+Returns:
+    - directions: a list of HTML directions
 """
 def walk_to(start, stop):
     url = 'http://maps.googleapis.com/maps/api/directions/json?'
@@ -27,17 +30,20 @@ def walk_to(start, stop):
     response = urlopen(url)
     json = load(response)
 
+    directions = []
     for step in json['routes'][0]['legs'][0]['steps']:
-        print step['html_instructions']
-
-    return
+        directions.append(step['html_instructions'])
+    return directions
 
 """
 walk_from(stop, dest):
 
 Parameters:
-    - stop: a TransLoc shuttle stop
+    - stop: a TransLoc shuttle stop JSON data item
     - dest: a (lat,lng) tuple
+
+Returns:
+    - directions: a list of HTML directions
 """
 def walk_from(stop, dest):
 
@@ -53,7 +59,8 @@ def walk_from(stop, dest):
     response = urlopen(url)
     json = load(response)
 
+    directions = []
     for step in json['routes'][0]['legs'][0]['steps']:
-        print step['html_instructions']
-
-    return
+        directions.append(step['html_instructions'])
+    return directions
+    
