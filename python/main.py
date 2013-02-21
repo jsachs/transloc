@@ -17,11 +17,11 @@ if __name__ == '__main__':
     start = []
 
     url = 'http://maps.googleapis.com/maps/api/geocode/json?'
-    
+
     for location, point in zip([s, d],[start, dest]):
         location = location.replace(' ', '+')
         address = 'address=' + location
-    
+
         address_url = url + address + "&sensor=true"
         address_response = urlopen(address_url)
         json_address = load(address_response)
