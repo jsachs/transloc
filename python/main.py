@@ -11,6 +11,9 @@ from trip         import Trip
 
 
 if __name__ == '__main__':
+
+    # Begin testing
+
     d  = raw_input("Please enter destination address:")
     s  = raw_input("Please enter start address:")
     dest  = []
