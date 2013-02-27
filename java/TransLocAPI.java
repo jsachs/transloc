@@ -87,24 +87,8 @@ public class TransLocAPI {
 
     public static void main(String[] args) throws IOException {
         
-        String agency = TransLocAPI.getAgency("uchicago");
-        System.out.println(agency);
+        System.out.println(getStops("100"));
 
-        /* The main shouldn't do anything right now
-
-        Map map = new HashMap();
-        map.put("rs_type", new String[]{"standard"});
-        map.put("sp", "");
-
-        String response = OMTR_REST.callMethod("Company.GetReportSuites", JSONObject.fromObject(map).toString());
-        JSONObject jsonObj = JSONObject.fromObject(response);
-        JSONArray jsonArry = JSONArray.fromObject(jsonObj.get("report_suites"));
-
-        for(int i = 0; i < jsonArry.size(); i++) {
-            System.out.println("Report Suite ID: " + JSONObject.fromObject(jsonArry.get(i)).get("rsid"));
-            System.out.println("Site Title: " + JSONObject.fromObject(jsonArry.get(i)).get("site_title"));
-            System.out.println();
-        */
         }
 }
 
