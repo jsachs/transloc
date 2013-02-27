@@ -1,6 +1,7 @@
 // Class for pulling JSON from the TransLoc API
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +14,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+
+import groovy.json.JsonSlurper;
 
 
 public class TransLocAPI {
@@ -34,7 +40,8 @@ public class TransLocAPI {
         builder.append(line);
         }
 
-        return builder.toString();
+        String agency = ParseJSON.parseAgency(name, builder.toString());
+        return agency;
     }
 
     /*
@@ -87,9 +94,57 @@ public class TransLocAPI {
 
     public static void main(String[] args) throws IOException {
         
-        System.out.println(getStops("100"));
+        System.out.println(getAgency("uchicago"));
 
+    }
+}
+
+class ParseJSON {
+
+    public static String parseAgency(String name, String json) {
+
+        JsonSlurper slurper = new JsonSlurper();
+        HashMap parse = (HashMap)slurper.parseText(json);
+        ArrayList<HashMap> data = (ArrayList<HashMap>)parse.get("data");
+
+        String ret = "";
+
+        for (HashMap agency : data) {
+            if (agency.get("name").equals(name))
+                ret = (String)agency.get("agency_id");
         }
+        return ret;
+    }
+
+    public static void parseRoutes(String json) {
+
+        JsonSlurper slurper = new JsonSlurper();
+        HashMap parse = (HashMap)slurper.parseText(json);
+        HashMap data = (HashMap)parse.get("data");
+        List<HashMap> routes = (List<HashMap>)data.get("100");
+
+        for (HashMap object : routes) {
+            System.out.println(object);
+        }
+
+    }
+
+    public static void parseStops(String json) {
+
+        JsonSlurper slurper = new JsonSlurper();
+        HashMap parse = (HashMap)slurper.parseText(json);
+    }
+
+    public static void parseEstimate(String json) {
+
+        JsonSlurper slurper = new JsonSlurper();
+        HashMap parse = (HashMap)slurper.parseText(json);
+    }
+
+    public static void main(String[] args) throws IOException {
+
+    }
+
 }
 
 

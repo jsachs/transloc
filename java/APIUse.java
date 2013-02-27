@@ -26,9 +26,9 @@ public class APIUse {
         return false;
     }
 
-    public String[] travel_info(double lat, double longitude, String end_address) {
+    public String[] travel_info(double lat, double lng, String end_address) {
 
-        String ret[]={"a", "b"};
+        String ret[] = {"Regenstein Library", "North", "MacClean Hall"};
 
         //return start name, route name, end name
 
@@ -40,7 +40,7 @@ public class APIUse {
 
         //return the latitude and longitude
 
-        double ret[]={1, 2};
+        double ret[] = {1, 2};
 
         return ret;
 
@@ -54,7 +54,7 @@ public class APIUse {
 
     }
 
-    public String[] find_shuttle(double lat, double longitude, String shuttle) {
+    public String[] find_shuttle(double lat, double lng, String route) {
 
         //return closest stop, time estimate
 
