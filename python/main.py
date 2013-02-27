@@ -9,7 +9,6 @@ from json         import load
 from route_finder import get_directions
 from trip         import Trip
 
-
 if __name__ == '__main__':
 
     # Begin testing

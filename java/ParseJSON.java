@@ -15,28 +15,26 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 
 public class ParseJSON {
 
-	public static String convertString(String obj) {
+	public static void parseAgency(String obj) {
 
-    	Gson gson = new Gson();
-    	String json = gson.toJson(obj);
-    	return json;
-	}
+        Gson gson = new Gson();
 
-	public static void getKey(String json){
+        JsonParser parser = new JsonParser();
+        System.out.println("gson.toJson: "  + gson.toJson(obj));
+        JsonObject json2 = parser.parse("{\"b\":\"c\"}").getAsJsonObject();
+        System.out.println("json2: " + json2);
+        JsonObject json = parser.parse(gson.toJson(obj)).getAsJsonObject();
+        System.out.println("json: " + json);
 
-		JsonParser jsonParser = new JsonParser();
-		JsonArray userArray = jsonParser.parse(json).getAsJsonArray();
-		System.out.println(userArray);
-
-		return;
 	}
 
     public static void main(String[] args) throws IOException {
 
-    	getKey(convertString("{\"rate limit\": 10}"));
+    	parseAgency("{'foo': bar}");
 
     }
 
