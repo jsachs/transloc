@@ -47,7 +47,7 @@ public class TransLocAPI {
     /*
     Method to get a list of routes from TransLoc
     */
-    public static String getRoutes(String id) throws IOException {
+    public static ArrayList<HashMap> getRoutes(String id) throws IOException {
         URL url = new URL(TRANSLOC + "routes.json?agencies=" + id);
         URLConnection connection = url.openConnection();
 
@@ -58,10 +58,11 @@ public class TransLocAPI {
         builder.append(line);
         }
 
-        return builder.toString();
+        ArrayList<HashMap> routes = ParseJSON.parseRoutes(id, builder.toString());
+        return routes;
     }
 
-    public static String getStops(String id) throws IOException {
+    public static ArrayList<HashMap> getStops(String id) throws IOException {
         URL url = new URL(TRANSLOC + "stops.json?agencies=" + id);
         URLConnection connection = url.openConnection();
 
@@ -72,10 +73,11 @@ public class TransLocAPI {
         builder.append(line);
         }
 
-        return builder.toString();
+        ArrayList<HashMap> stops = ParseJSON.parseStops(builder.toString());
+        return stops;
     }
 
-    public static String getEstimate(String id, String route, String stop) throws IOException {
+    public static ArrayList<HashMap> getEstimate(String id, String route, String stop) throws IOException {
         URL url = new URL(TRANSLOC + "arrival-estimate.json?"
                                    + "agencies=" + id
                                    + "&routes="  + route
@@ -89,13 +91,15 @@ public class TransLocAPI {
         builder.append(line);
         }
 
-        return builder.toString();
+        ArrayList<HashMap> estimates = ParseJSON.parseEstimate(builder.toString());
+        return estimates;
     }
 
     public static void main(String[] args) throws IOException {
-        
-        System.out.println(getAgency("uchicago"));
-
+        String id = getAgency("uchicago");
+        System.out.println(id);
+        System.out.println(getRoutes(id));
+        System.out.println(getStops(id));
     }
 }
 
@@ -116,35 +120,38 @@ class ParseJSON {
         return ret;
     }
 
-    public static void parseRoutes(String json) {
+    public static ArrayList<HashMap> parseRoutes(String id, String json) {
 
         JsonSlurper slurper = new JsonSlurper();
         HashMap parse = (HashMap)slurper.parseText(json);
         HashMap data = (HashMap)parse.get("data");
-        List<HashMap> routes = (List<HashMap>)data.get("100");
+        ArrayList<HashMap> routes = (ArrayList<HashMap>)data.get(id);
 
-        for (HashMap object : routes) {
-            System.out.println(object);
-        }
-
+        return routes;
     }
 
-    public static void parseStops(String json) {
+    public static ArrayList<HashMap> parseStops(String json) {
 
         JsonSlurper slurper = new JsonSlurper();
         HashMap parse = (HashMap)slurper.parseText(json);
+        ArrayList<HashMap> stops = (ArrayList<HashMap>)parse.get("data");
+
+        return stops;
     }
 
-    public static void parseEstimate(String json) {
+    public static ArrayList<HashMap> parseEstimate(String json) {
 
         JsonSlurper slurper = new JsonSlurper();
         HashMap parse = (HashMap)slurper.parseText(json);
+        ArrayList<HashMap> estimates = (ArrayList<HashMap>)parse.get("data");
+
+        return estimates;
+
     }
 
     public static void main(String[] args) throws IOException {
-
+        return;
     }
-
 }
 
 
