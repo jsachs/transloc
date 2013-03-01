@@ -29,9 +29,56 @@ public class RouteFinder {
 		return dist;
 	}
 
-	public static HashMap getNearestStop(double lat, double lng);
+	public static HashMap getNearestStop(double lat, double lng) {
+        ArrayList<HashMap> routes = TransLocAPI.getRoutes("100");
+        ArrayList<HashMap> stops  = TransLocAPI.getStops("100");
+        int min_dist = -1;
+        HashMap min_stop;
+        ArrayList<int> route_ids;
+        for (HashMap route: routes)
+            route_ids.append(route.get("route_id"));
 
-	public static HashMap getNearestStopOnRoute(HashMap route, double lat, double lng);
+        // Make sure North, South, East, Central are running
+
+        for (HashMap stop : stops) {
+            ArrayList<int> route_list = stop.get("routes");
+            for (int id : route_list) {
+                if (route_ids.contains(id)) {
+                    double stop_lat = stop.get("location").get("lat");
+                    double stop_lng = stop.get("location").get("lng");
+                    double dist = latLngDist(stop_lat, stop_lng, lat, lng);
+                    if (min_dist < 0 || dist < min_dist) {
+                        min_dist = dist;
+                        min_stop = stop;
+                    }
+                }
+            }
+        }
+        return min_stop;
+
+    }
+
+	public static HashMap getNearestStopOnRoute(HashMap route, double lat, double lng) {
+        ArrayList<HashMap> stops  = TransLocAPI.getStops("100");
+        int min_dist = -1;
+        HashMap min_stop;
+
+        // Make sure North, South, East, Central are running
+
+        for (HashMap stop : stops) {
+            if stop.get("routes").contains(route.get("route_id")) {
+                    double stop_lat = stop.get("location").get("lat");
+                    double stop_lng = stop.get("location").get("lng");
+                    double dist = latLngDist(stop_lat, stop_lng, lat, lng);
+                    if (min_dist < 0 || dist < min_dist) {
+                        min_dist = dist;
+                        min_stop = stop;
+                    }
+                }
+            }
+        }
+        return min_stop;
+    }
 
 	public static String[] getDirections(double lat_i, double lng_i,
                                              double lat_f, double lng_f);

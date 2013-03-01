@@ -24,7 +24,6 @@ import groovy.json.JsonSlurper;
 public class TransLocAPI {
 
     private static String TRANSLOC = "http://api.transloc.com/1.1/";
-    private TransLocAPI() {}
 
     /*
     Method to get a list of agencies from TransLoc
