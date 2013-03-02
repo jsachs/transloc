@@ -142,10 +142,10 @@ class ParseJSON {
 
         JsonSlurper slurper = new JsonSlurper();
         HashMap parse = (HashMap)slurper.parseText(json);
-        ArrayList<HashMap> estimates = (ArrayList<HashMap>)parse.get("data");
+        ArrayList<HashMap> arrivals = (ArrayList<HashMap>)parse.get("data");
+        ArrayList<HashMap> estimates = (ArrayList<HashMap>)((arrivals.get(0)).get("arrivals"));
 
         return estimates;
-
     }
 
     public static void main(String[] args) throws IOException {
