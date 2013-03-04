@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
+import org.json.*;
 import groovy.json.JsonSlurper;
 
 
@@ -28,7 +29,7 @@ public class TransLocAPI {
     /*
     Method to get a list of agencies from TransLoc
     */
-    public static String getAgency(String name) throws IOException {
+    public static String getAgency(String name) throws IOException, JSONException {
         URL url = new URL(TRANSLOC + "agencies.json");
         URLConnection connection = url.openConnection();
 
@@ -94,7 +95,7 @@ public class TransLocAPI {
         return estimates;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, JSONException {
         String id = getAgency("uchicago");
         System.out.println(id);
         System.out.println(getRoutes(id));
@@ -104,17 +105,15 @@ public class TransLocAPI {
 
 class ParseJSON {
 
-    public static String parseAgency(String name, String json) {
-
-        JsonSlurper slurper = new JsonSlurper();
-        HashMap parse = (HashMap)slurper.parseText(json);
-        ArrayList<HashMap> data = (ArrayList<HashMap>)parse.get("data");
-
+    public static String parseAgency(String name, String json) throws JSONException {
+        JSONObject jObj = new JSONObject(json);
+        JSONArray temp_data = (JSONArray)jObj.get("data");
+ 
         String ret = "";
 
-        for (HashMap agency : data) {
-            if (agency.get("name").equals(name))
-                ret = (String)agency.get("agency_id");
+        for (int i=0; i < temp_data.length(); i++) {
+            if ((((JSONObject)temp_data.get(i)).getString("name")).equals(name))
+                ret = (String)((JSONObject)temp_data.get(i)).getString("agency_id");
         }
         return ret;
     }
