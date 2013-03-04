@@ -59,9 +59,12 @@ public class APIUse {
         HashMap start = (HashMap)directions.get(0);
         HashMap route = (HashMap)directions.get(1);
         HashMap end   = (HashMap)directions.get(2);
+        Trip trip = new Trip(start, route, end);
 
-        String ret[]={(String)start.get("name"), (String)route.get("long_name"), (String)end.get("name")};
-        //return start name, route name, end name
+
+        String ret[]={(String)start.get("name"), (String)route.get("long_name"),
+                      (String)end.get("name"), trip.I_EST};
+        //return start name, route name, end name, arrival at initial stop
         return ret;
     }
 
@@ -74,20 +77,35 @@ public class APIUse {
     }
     */
 
+    /*
     public int arrival_time(String route, String stop)
     {
         //return time till arrival
         return 0;
     }
-
-    public String[] find_shuttle(double lat, double longitude, String shuttle)
+    */
+    public String[] find_shuttle(double lat, double lng, String route_id) throws IOException
     {
         //return closest stop, time estimate
-        String ret[]={"a", "b", "c"};
+        String id = TransLocAPI.getAgency("uchicago");
+        ArrayList<HashMap> routes = TransLocAPI.getRoutes(id);
+        HashMap route = new HashMap();
+
+        for (HashMap temp_route : routes) {
+            if (route_id.equals((String)temp_route.get("route_id"))) {
+                route = temp_route;
+                break;
+            }
+        }
+
+        HashMap near_stop = RouteFinder.getNearestStopOnRoute(route, lat, lng);
+        Trip trip = new Trip(near_stop, route, near_stop);
+        String ret[] = {(String)near_stop.get("name"), trip.I_EST};
+
         return ret;
     }
 
-    /*
+
     public double get_distance(Location l1, Location l2)
     {
         double lat1=l1.getLatitude();
@@ -108,5 +126,5 @@ public class APIUse {
         double d = R * c * 1000; //distance in meters
         return d;
     }
-    */
+
 }
