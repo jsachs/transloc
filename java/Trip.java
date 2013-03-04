@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Iterator;
 import java.lang.Math;
 
-import groovy.json.JsonSlurper;
 
 public class Trip {
 

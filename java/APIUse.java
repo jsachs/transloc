@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
-import groovy.json.JsonSlurper;
+import org.json.*;
 
 //import android.location.Location;
 
@@ -46,14 +46,9 @@ public class APIUse {
         builder.append(line);
         }
 
-        JsonSlurper slurper = new JsonSlurper();
-        HashMap parse = (HashMap)slurper.parseText(builder.toString());
-        ArrayList<HashMap> results = (ArrayList<HashMap>)parse.get("results");
-        HashMap res = (HashMap)results.get(0);
-        HashMap geo = (HashMap)res.get("geometry");
-        HashMap loc = (HashMap)geo.get("location");
-        double lt = Double.valueOf((String)loc.get("lat")).doubleValue();
-        double ln = Double.valueOf((String)loc.get("lng")).doubleValue();
+        JSONObject jObj = new JSONObject(builder.toString());
+        double lt = jObj.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+        double ln = jObj.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
 
         ArrayList<HashMap> directions = RouteFinder.getDirections(lat, longitude, lt, ln);
         HashMap start = (HashMap)directions.get(0);
