@@ -87,7 +87,7 @@ public class APIUse {
         HashMap route = new HashMap();
 
         for (HashMap temp_route : routes) {
-            if (route_id.equals((String)temp_route.get("route_id"))) {
+            if (id.equals((String)temp_route.get("route_id"))) {
                 route = temp_route;
                 break;
             }

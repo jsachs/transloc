@@ -128,7 +128,17 @@ class ParseJSON {
             Iterator it = j.keys();
             while (it.hasNext()) {
                 String n = (String)it.next();
-                pairs.put(n,j.get(n));
+                if (n.equals("stops")) {
+                    ArrayList<Integer> list = new ArrayList<Integer>();
+                    JSONArray jArray = j.getJSONArray(n);
+                    for (int k=0; k<jArray.length(); k++) {
+                        Integer sid = jArray.getInt(k);
+                        list.add(sid);
+                    }
+                    pairs.put(n,list);
+                }
+                else
+                    pairs.put(n,j.get(n));
             }
             routes.add(pairs);
         }
@@ -146,7 +156,17 @@ class ParseJSON {
             Iterator it = j.keys();
             while (it.hasNext()) {
                 String n = (String)it.next();
-                pairs.put(n,j.get(n));
+                if (n.equals("routes")) {
+                    ArrayList<Integer> list = new ArrayList<Integer>();
+                    JSONArray jArray = j.getJSONArray(n);
+                    for (int k=0; k<jArray.length(); k++) {
+                        Integer rid = jArray.getInt(k);
+                        list.add(rid);
+                    }
+                    pairs.put(n,list);
+                }
+                else
+                    pairs.put(n,j.get(n));
             }
             stops.add(pairs);
         }
