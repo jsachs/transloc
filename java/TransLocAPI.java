@@ -123,12 +123,12 @@ class ParseJSON {
         ArrayList<HashMap> routes = new ArrayList<HashMap>();
 
         for (int i=0; i < temp_data.length(); i++) {
-            HashMap<String,String> pairs = new HashMap<String,String>();
+            HashMap<String,Object> pairs = new HashMap<String,Object>();
             JSONObject j = temp_data.optJSONObject(i);
             Iterator it = j.keys();
             while (it.hasNext()) {
                 String n = (String)it.next();
-                pairs.put(n,j.getString(n));
+                pairs.put(n,j.get(n));
             }
             routes.add(pairs);
         }
