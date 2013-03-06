@@ -19,15 +19,17 @@ import java.util.List;
 import java.util.Iterator;
 import java.lang.Math;
 
+import org.json.*;
+
 
 public class Walking {
 
     private static String GOOGLEMAPS = "http://maps.googleapis.com/maps/api/directions/json?";
 
-	public static String walkTo(double lat, double lng, HashMap stop) throws IOException {
+	public static String walkTo(double lat, double lng, HashMap stop) throws IOException, JSONException {
         String ORIGIN = "origin=" + lat + "," + lng;
-        String DEST   = "&destination=" + ((HashMap)stop.get("location")).get("lat")
-                                  + "," + ((HashMap)stop.get("location")).get("lng)");
+        String DEST   = "&destination=" + ((JSONObject)stop.get("location")).getString("lat")
+                                  + "," + ((JSONObject)stop.get("location")).getString("lng");
         String INFO   = "&sensor=true&mode=walking";
 
         URL url = new URL(GOOGLEMAPS + ORIGIN + DEST + INFO);
@@ -44,7 +46,7 @@ public class Walking {
         return builder.toString();
     }
 
-    public static String walkFrom(HashMap stop, double lat, double lng) throws IOException {
+    public static String walkFrom(HashMap stop, double lat, double lng) throws IOException, JSONException {
         String ORIGIN = "&destination=" + ((HashMap)stop.get("location")).get("lat")
                                   + "," + ((HashMap)stop.get("location")).get("lng)");
         String DEST   = "origin=" + lat + "," + lng;
@@ -63,7 +65,15 @@ public class Walking {
         return builder.toString();
     }
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, JSONException {
+        System.out.println(walkTo(41.791393,-87.599776,TransLocAPI.getStops("100").get(0)));
+        System.out.println(walkFrom(TransLocAPI.getStops("100").get(0),41.791393,-87.599776));
 		return;		
 	}
 }
+
+
+
+
+
+

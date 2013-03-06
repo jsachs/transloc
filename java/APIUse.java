@@ -26,14 +26,14 @@ public class APIUse {
 
     private static String GEOCODE = "http://maps.googleapis.com/maps/api/geocode/json?";
 
-    public boolean need_switch(double lat, double longitude, String end_address)
+    public static boolean need_switch(double lat, double longitude, String end_address)
     {
         //true if you need to switch, false otherwise
         return false;
     }
 
-    public String[] travel_info(double lat, double longitude, String end_address)
-        throws IOException {
+    public static String[] travel_info(double lat, double longitude, String end_address)
+        throws IOException, JSONException {
         String ADDRESS = "address=" + end_address.replaceAll(" ", "+");
 
         URL url = new URL(GEOCODE + ADDRESS + "&sensor=true");
@@ -63,23 +63,7 @@ public class APIUse {
         return ret;
     }
 
-    /*
-    Location end_loc(String end_name)
-    {
-        //return the latitude and longitude
-        Location location=null;
-        return location;
-    }
-    */
-
-    /*
-    public int arrival_time(String route, String stop)
-    {
-        //return time till arrival
-        return 0;
-    }
-    */
-    public String[] find_shuttle(double lat, double lng, String route_id) throws IOException
+    public static String[] find_shuttle(double lat, double lng, String route_id) throws IOException, JSONException
     {
         //return closest stop, time estimate
         String id = TransLocAPI.getAgency("uchicago");
@@ -87,7 +71,7 @@ public class APIUse {
         HashMap route = new HashMap();
 
         for (HashMap temp_route : routes) {
-            if (id.equals((String)temp_route.get("route_id"))) {
+            if (route_id.equals((String)temp_route.get("route_id"))) {
                 route = temp_route;
                 break;
             }
@@ -100,26 +84,8 @@ public class APIUse {
         return ret;
     }
 
-
-    public double get_distance(Location l1, Location l2)
-    {
-        double lat1=l1.getLatitude();
-        double long1=l1.getLongitude();
-        double lat2=l1.getLatitude();
-        double long2=l2.getLongitude();
-
-        double R = 6371; //radius of the earth
-        double dLat=(lat1-lat2); //difference in latitudes
-        double dLong=(long1-long2);//difference in longitudes
-
-        double a = 
-                Math.sin(dLat/2)*Math.sin(dLat/2) + 
-                Math.cos((Math.PI/180)*lat1) * Math.cos((Math.PI/180)*lat2) *
-                Math.sin(dLong/2) * Math.sin(dLong/2);
-
-        double c = 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d = R * c * 1000; //distance in meters
-        return d;
+    public static void main(String[] args) throws IOException, JSONException {
+        System.out.println(find_shuttle(41.791393,-87.599776,"8000576"));
+        return;
     }
-
 }

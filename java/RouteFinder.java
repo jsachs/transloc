@@ -22,6 +22,7 @@ import org.json.*;
 
 // TODO: error message if the Big 4 aren't running.
 
+
 public class RouteFinder {
 
     public static ArrayList<Integer> ROUTE_LIST = new ArrayList<Integer>() {{ 
@@ -31,10 +32,22 @@ public class RouteFinder {
                                                 add(8000580);  // South
                                             }};
 
-	public static double latLngDist(double x1, double y1, double x2, double y2) {
-		double dist = Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2));
-		return dist;
-	}
+    public static double get_distance(double lat1, double long1,
+                               double lat2, double long2)
+    {
+        double R = 6371; //radius of the earth
+        double dLat=(lat1-lat2); //difference in latitudes
+        double dLong=(long1-long2);//difference in longitudes
+
+        double a = 
+                Math.sin(dLat/2)*Math.sin(dLat/2) + 
+                Math.cos((Math.PI/180)*lat1) * Math.cos((Math.PI/180)*lat2) *
+                Math.sin(dLong/2) * Math.sin(dLong/2);
+
+        double c = 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double d = R * c * 1000; //distance in meters
+        return d;
+    }
 
 	public static HashMap getNearestStop(double lat, double lng) throws IOException, JSONException {
         String agency = TransLocAPI.getAgency("uchicago");
@@ -56,7 +69,7 @@ public class RouteFinder {
                 if (route_ids.contains(id)) {
                     double stop_lat = ((JSONObject)stop.get("location")).getDouble("lat");
                     double stop_lng = ((JSONObject)stop.get("location")).getDouble("lng");
-                    double dist = latLngDist(stop_lat, stop_lng, lat, lng);
+                    double dist = get_distance(stop_lat, stop_lng, lat, lng);
                     if (min_dist < 0 || dist < min_dist) {
                         min_dist = dist;
                         min_stop = stop;
@@ -77,7 +90,7 @@ public class RouteFinder {
             if (((ArrayList<Integer>)stop.get("routes")).contains(Integer.parseInt((String)route.get("route_id")))) {
                     double stop_lat = ((JSONObject)stop.get("location")).getDouble("lat");
                     double stop_lng = ((JSONObject)stop.get("location")).getDouble("lng");
-                    double dist = latLngDist(stop_lat, stop_lng, lat, lng);
+                    double dist = get_distance(stop_lat, stop_lng, lat, lng);
                     if (min_dist < 0 || dist < min_dist) {
                         min_dist = dist;
                         min_stop = stop;
@@ -110,7 +123,7 @@ public class RouteFinder {
         double min_dist = -1;
         HashMap i_stop = new HashMap();
         for (HashMap stop : i_stops) {
-            double dist = latLngDist(lat_i, lng_i,
+            double dist = get_distance(lat_i, lng_i,
                                      ((JSONObject)stop.get("location")).getDouble("lat"),
                                      ((JSONObject)stop.get("location")).getDouble("lng"));
             if ((min_dist < 0) || (dist < min_dist)) {
@@ -118,8 +131,6 @@ public class RouteFinder {
                 i_stop = stop;
             }
         }
-        System.out.println(i_stop.get("routes"));
-        System.out.println(f_stop.get("routes"));
         HashMap route = new HashMap();
         for (HashMap temp_route : routes) {
             if ( (((ArrayList<Integer>)i_stop.get("routes")).contains(Integer.parseInt((String)temp_route.get("route_id"))))
