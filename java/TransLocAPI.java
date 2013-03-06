@@ -76,11 +76,11 @@ public class TransLocAPI {
         return stops;
     }
 
-    public static ArrayList<HashMap> getEstimate(String id, String route, String stop) throws IOException, JSONException {
-        URL url = new URL(TRANSLOC + "arrival-estimate.json?"
+    public static ArrayList<HashMap> getEstimate(String id, String route_id, String stop_id) throws IOException, JSONException {
+        URL url = new URL(TRANSLOC + "arrival-estimates.json?"
                                    + "agencies=" + id
-                                   + "&routes="  + route
-                                   + "&stops="   + stop);
+                                   + "&routes="  + route_id
+                                   + "&stops="   + stop_id);
         URLConnection connection = url.openConnection();
 
         String line;
@@ -95,10 +95,11 @@ public class TransLocAPI {
     }
 
     public static void main(String[] args) throws IOException, JSONException {
-        String id = getAgency("uchicago");
-        System.out.println(id);
-        System.out.println(getRoutes(id));
-        System.out.println(getStops(id));
+        String agency = "uchicago";
+        String id = getAgency(agency);
+        ArrayList<HashMap> routes = getRoutes(id);
+        ArrayList<HashMap> stops  = getStops(id);
+        ArrayList<HashMap> estimates = getEstimate(id, "8000576", "8036212");
     }
 }
 
