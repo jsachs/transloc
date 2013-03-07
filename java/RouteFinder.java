@@ -142,7 +142,7 @@ public class RouteFinder {
         }
         ArrayList<HashMap> directions = new ArrayList<HashMap>();
         directions.add(i_stop);
-        directions.add(route);
+        directions.add(route);  // Will be empty if the Big 4 aren't running
         directions.add(f_stop);
         return directions;
     }

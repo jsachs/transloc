@@ -26,8 +26,12 @@ public class APIUse {
 
     private static String GEOCODE = "http://maps.googleapis.com/maps/api/geocode/json?";
 
-    public static boolean need_switch(double lat, double longitude, String end_address)
+    public static boolean need_switch(double lat, double lng, HashMap stop) throws IOException, JSONException
     {
+        double stop_lat = ((JSONObject)stop.get("location")).getDouble("lat");
+        double stop_lng = ((JSONObject)stop.get("location")).getDouble("lng");
+        double dist = RouteFinder.get_distance(lat, lng, stop_lat, stop_lng);
+        if (dist > 1600) return true;
         //true if you need to switch, false otherwise
         return false;
     }
@@ -54,9 +58,16 @@ public class APIUse {
         HashMap start = (HashMap)directions.get(0);
         HashMap route = (HashMap)directions.get(1);
         HashMap end   = (HashMap)directions.get(2);
+        if (route.isEmpty()) {
+            String ret[] = {"No shuttle servce."};  // None of the Big 4 are running
+            return ret;
+        }
+        if (start.equals(end)) {
+            String ret[] = {"Walking will be faster!"};
+            return ret;
+        }
+
         Trip trip = new Trip(start, route, end);
-
-
         String ret[]={(String)start.get("name"), (String)route.get("long_name"),
                       (String)end.get("name"), trip.I_EST};
         //return start name, route name, end name, arrival at initial stop
@@ -85,6 +96,7 @@ public class APIUse {
     }
 
     public static void main(String[] args) throws IOException, JSONException {
+        System.out.println(travel_info(41.791393,-87.599776,"5400 S Maryland Ave Chicago IL 60615"));
         System.out.println(find_shuttle(41.791393,-87.599776,"8000576"));
         return;
     }

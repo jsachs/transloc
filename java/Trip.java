@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.lang.Math;
+import java.sql.Time;
 
 import org.json.*;
 
@@ -28,8 +29,8 @@ public class Trip {
 	public static HashMap I_STOP;
 	public static HashMap ROUTE;
 	public static HashMap F_STOP;
-	public static String  I_EST;
-	public static String  F_EST;
+	public static Time    I_EST;
+	public static Time  F_EST;
 
 	public Trip(HashMap i_stop, HashMap route, HashMap f_stop) throws IOException, JSONException {
 		I_STOP = i_stop;
@@ -42,18 +43,32 @@ public class Trip {
 		String id = TransLocAPI.getAgency("uchicago");
 		ArrayList<HashMap> iEst = TransLocAPI.getEstimate(id, (String)ROUTE.get("route_id"),
 		     											      (String)I_STOP.get("stop_id"));
-		I_EST = (String)(iEst.get(0)).get("arrival_at");
+		I_EST = parseTime((String)(iEst.get(0)).get("arrival_at"));
 
 		ArrayList<HashMap> fEst = TransLocAPI.getEstimate(id, (String)ROUTE.get("route_id"),
 			   											      (String)F_STOP.get("stop_id"));
 		for (HashMap est : fEst) {
-			if (Integer.parseInt((String)est.get("vehicle_id")) == Integer.parseInt((String)(iEst.get(0)).get("vehicle_id")))
-				if (((String)est.get("arrival_at")).compareTo((String)(iEst.get(0)).get("arrival_at")) < 0) {
-					F_EST = (String)est.get("arrival_at");
+			if (Integer.parseInt((String)est.get("vehicle_id")) == Integer.parseInt((String)(iEst.get(0)).get("vehicle_id"))) {
+				Time iTime = parseTime((String)(iEst.get(0)).get("arrival_at"));
+				Time fTime = parseTime((String)est.get("arrival_at"));
+				if ( iTime.toString().compareTo(fTime.toString()) < 0
+				  || ( iTime.toString().compareTo(fTime.toString()) > 0 && fTime.toString().compareTo("00:00:00") > 0)) {
+					F_EST = fTime;
 					break;
 				}
+			}
 		}
 		return;
+	}
+
+	public static Time parseTime(String time_string) {
+		String[] temp_time = time_string.split("T");
+		temp_time = temp_time[1].split("-");
+		temp_time = temp_time[0].split(":");
+		Time time = new Time(Integer.parseInt(temp_time[0]),
+			             Integer.parseInt(temp_time[1]),
+			             Integer.parseInt(temp_time[2]));
+		return time;
 	}
 
 	public static void main(String[] args) throws IOException, JSONException {
