@@ -31,7 +31,7 @@ public class RouteFinder {
                                                 add(8000560);  // East
                                                 add(8000580);  // South
                                             }};
-
+    /*
     public static double get_distance(double lat1, double long1,
                                double lat2, double long2)
     {
@@ -47,6 +47,12 @@ public class RouteFinder {
         double c = 2* Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = R * c * 1000; //distance in meters
         return d;
+    }
+    */
+    public static double get_distance(double lat1, double lng1,
+                                      double lat2, double lng2)
+    {
+        return Math.sqrt(Math.pow(lat2-lat1,2) + Math.pow(lng2-lng1,2));
     }
 
 	public static HashMap getNearestStop(double lat, double lng) throws IOException, JSONException {
@@ -87,11 +93,14 @@ public class RouteFinder {
         HashMap min_stop = new HashMap();
 
         for (HashMap stop : stops) {
+            System.out.println(stop.get("routes"));
+            System.out.println(route.get("route_id"));
             if (((ArrayList<Integer>)stop.get("routes")).contains(Integer.parseInt((String)route.get("route_id")))) {
                     double stop_lat = ((JSONObject)stop.get("location")).getDouble("lat");
                     double stop_lng = ((JSONObject)stop.get("location")).getDouble("lng");
                     double dist = get_distance(stop_lat, stop_lng, lat, lng);
                     if (min_dist < 0 || dist < min_dist) {
+                        System.out.println(dist);
                         min_dist = dist;
                         min_stop = stop;
                     }
