@@ -36,7 +36,7 @@ public class APIUse {
         return false;
     }
 
-    public static ArrayList<HashMap> travel_choices(String end_address)
+    public static ArrayList<JSONObject> travel_choices(String end_address)
         throws IOException, JSONException {
         String ADDRESS = "address=" + end_address.replaceAll(" ", "+");
 
@@ -52,9 +52,11 @@ public class APIUse {
 
         JSONObject jObj = new JSONObject(builder.toString());
         JSONArray results = jObj.getJSONArray("results");
-        ArrayList<JSONObject> ret = {results.getJSONObject(0),
-                                     results.getJSONObject(1),
-                                     results.getJSONObject(2)};
+        ArrayList<JSONObject> ret = new ArrayList<JSONObject>();
+        ret.add(results.getJSONObject(0));
+        ret.add(results.getJSONObject(1));
+        ret.add(results.getJSONObject(2));
+
         return ret;
     }
 
@@ -144,14 +146,7 @@ public class APIUse {
     }
 
     public static void main(String[] args) throws IOException, JSONException {
-        String[] info = travel_info(41.791393,-87.599776,"5400 S Maryland Ave Chicago IL 60615");
-        String[] shuttle = find_shuttle(41.791393,-87.599776,"8000576");
-        System.out.println(info[0]);
-        System.out.println(info[1]);
-        System.out.println(info[2]);
-        System.out.println(info[3]);
-        System.out.println(shuttle[0]);
-        System.out.println(shuttle[1]);
+
         return;
     }
 }
