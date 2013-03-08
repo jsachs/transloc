@@ -53,10 +53,8 @@ public class APIUse {
         JSONObject jObj = new JSONObject(builder.toString());
         JSONArray results = jObj.getJSONArray("results");
         ArrayList<JSONObject> ret = new ArrayList<JSONObject>();
-        ret.add(results.getJSONObject(0));
-        ret.add(results.getJSONObject(1));
-        ret.add(results.getJSONObject(2));
-
+        for (int k=0; k<results.length(); k++)
+            ret.add(results.getJSONObject(k));
         return ret;
     }
 
