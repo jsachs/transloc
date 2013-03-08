@@ -79,7 +79,7 @@ public class APIUse {
 
         Trip trip = new Trip(start, route, end);
         String ret[]={(String)start.get("name"), (String)route.get("long_name"),
-                      (String)end.get("name"), trip.I_EST.toString()};
+                      (String)end.get("name"), trip.I_EST.toString(), trip.F_EST.toString()};
         //return start name, route name, end name, arrival at initial stop
         return ret;
     }    
@@ -117,7 +117,7 @@ public class APIUse {
 
         Trip trip = new Trip(start, route, end);
         String ret[]={(String)start.get("name"), (String)route.get("long_name"),
-                      (String)end.get("name"), trip.I_EST.toString()};
+                      (String)end.get("name"), trip.I_EST.toString(), trip.F_EST.toString()};
         //return start name, route name, end name, arrival at initial stop
         return ret;
     }
@@ -138,7 +138,7 @@ public class APIUse {
 
         HashMap near_stop = RouteFinder.getNearestStopOnRoute(route, lat, lng);
         Trip trip = new Trip(near_stop, route, near_stop);
-        String ret[] = {(String)near_stop.get("name"), trip.I_EST.toString()};
+        String ret[] = {(String)near_stop.get("name"), trip.I_EST.toString(), trip.F_EST.toString()};
 
         return ret;
     }
