@@ -36,6 +36,54 @@ public class APIUse {
         return false;
     }
 
+    public static ArrayList<HashMap> travel_choices(String end_address)
+        throws IOException, JSONException {
+        String ADDRESS = "address=" + end_address.replaceAll(" ", "+");
+
+        URL url = new URL(GEOCODE + ADDRESS + "&sensor=true");
+        URLConnection connection = url.openConnection();
+
+        String line;
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        while((line = reader.readLine()) != null) {
+        builder.append(line);
+        }
+
+        JSONObject jObj = new JSONObject(builder.toString());
+        JSONArray results = jObj.getJSONArray("results");
+        ArrayList<JSONObject> ret = {results.getJSONObject(0),
+                                     results.getJSONObject(1),
+                                     results.getJSONObject(2)};
+        return ret;
+    }
+
+    public static String[] travel_info(double lat, double longitude, JSONObject end_address)
+        throws IOException, JSONException {
+
+        double lt = end_address.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+        double ln = end_address.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+        ArrayList<HashMap> directions = RouteFinder.getDirections(lat, longitude, lt, ln);
+        HashMap start = (HashMap)directions.get(0);
+        HashMap route = (HashMap)directions.get(1);
+        HashMap end   = (HashMap)directions.get(2);
+        if (route.isEmpty()) {
+            String ret[] = {"No shuttle servce."};  // None of the Big 4 are running
+            return ret;
+        }
+        if (start.equals(end)) {
+            String ret[] = {"Walking will be faster!"};
+            return ret;
+        }
+
+        Trip trip = new Trip(start, route, end);
+        String ret[]={(String)start.get("name"), (String)route.get("long_name"),
+                      (String)end.get("name"), trip.I_EST.toString()};
+        //return start name, route name, end name, arrival at initial stop
+        return ret;
+    }    
+    /*
     public static String[] travel_info(double lat, double longitude, String end_address)
         throws IOException, JSONException {
         String ADDRESS = "address=" + end_address.replaceAll(" ", "+");
@@ -69,11 +117,11 @@ public class APIUse {
 
         Trip trip = new Trip(start, route, end);
         String ret[]={(String)start.get("name"), (String)route.get("long_name"),
-                      (String)end.get("name"), trip.I_EST};
+                      (String)end.get("name"), trip.I_EST.toString()};
         //return start name, route name, end name, arrival at initial stop
         return ret;
     }
-
+    */
     public static String[] find_shuttle(double lat, double lng, String route_id) throws IOException, JSONException
     {
         //return closest stop, time estimate
@@ -90,14 +138,20 @@ public class APIUse {
 
         HashMap near_stop = RouteFinder.getNearestStopOnRoute(route, lat, lng);
         Trip trip = new Trip(near_stop, route, near_stop);
-        String ret[] = {(String)near_stop.get("name"), trip.I_EST};
+        String ret[] = {(String)near_stop.get("name"), trip.I_EST.toString()};
 
         return ret;
     }
 
     public static void main(String[] args) throws IOException, JSONException {
-        System.out.println(travel_info(41.791393,-87.599776,"5400 S Maryland Ave Chicago IL 60615"));
-        System.out.println(find_shuttle(41.791393,-87.599776,"8000576"));
+        String[] info = travel_info(41.791393,-87.599776,"5400 S Maryland Ave Chicago IL 60615");
+        String[] shuttle = find_shuttle(41.791393,-87.599776,"8000576");
+        System.out.println(info[0]);
+        System.out.println(info[1]);
+        System.out.println(info[2]);
+        System.out.println(info[3]);
+        System.out.println(shuttle[0]);
+        System.out.println(shuttle[1]);
         return;
     }
 }

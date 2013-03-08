@@ -93,14 +93,11 @@ public class RouteFinder {
         HashMap min_stop = new HashMap();
 
         for (HashMap stop : stops) {
-            System.out.println(stop.get("routes"));
-            System.out.println(route.get("route_id"));
             if (((ArrayList<Integer>)stop.get("routes")).contains(Integer.parseInt((String)route.get("route_id")))) {
                     double stop_lat = ((JSONObject)stop.get("location")).getDouble("lat");
                     double stop_lng = ((JSONObject)stop.get("location")).getDouble("lng");
                     double dist = get_distance(stop_lat, stop_lng, lat, lng);
                     if (min_dist < 0 || dist < min_dist) {
-                        System.out.println(dist);
                         min_dist = dist;
                         min_stop = stop;
                     }
