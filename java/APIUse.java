@@ -85,8 +85,8 @@ public class APIUse {
         //return start name, route name, end name, arrival at initial stop
         return ret;
     }    
-    /*
-    public static String[] travel_info(double lat, double longitude, String end_address)
+    
+    public static String[] travel_info_home(double lat, double longitude, String end_address)
         throws IOException, JSONException {
         String ADDRESS = "address=" + end_address.replaceAll(" ", "+");
 
@@ -123,7 +123,7 @@ public class APIUse {
         //return start name, route name, end name, arrival at initial stop
         return ret;
     }
-    */
+
     public static String[] find_shuttle(double lat, double lng, String route_id) throws IOException, JSONException
     {
         //return closest stop, time estimate
