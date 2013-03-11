@@ -30,7 +30,7 @@ public class Trip {
 	public static HashMap ROUTE;
 	public static HashMap F_STOP;
 	public static Time    I_EST;
-	public static Time  F_EST;
+	public static Time    F_EST;
 
 	public Trip(HashMap i_stop, HashMap route, HashMap f_stop) throws IOException, JSONException {
 		I_STOP = i_stop;
